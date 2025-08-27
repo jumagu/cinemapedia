@@ -17,7 +17,7 @@ class TmdbNowPlayingResponse {
 
   factory TmdbNowPlayingResponse.fromJson(Map<String, dynamic> json) =>
       TmdbNowPlayingResponse(
-        dates: json["dates"]
+        dates: json["dates"] != null
             ? TmdbNowPlayingResponseDates.fromJson(json["dates"])
             : null,
         page: json["page"],

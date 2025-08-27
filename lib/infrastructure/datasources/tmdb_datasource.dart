@@ -1,6 +1,8 @@
 import 'package:cinemapedia/config/constants/environment.dart';
 import 'package:cinemapedia/domain/datasources/movies_datasource.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/infrastructure/mappers/movie_mapper.dart';
+import 'package:cinemapedia/infrastructure/models/tmdb/tmdb_now_playing_response.dart';
 import 'package:dio/dio.dart';
 
 class TmdbDatasource extends MoviesDatasource {
@@ -13,8 +15,15 @@ class TmdbDatasource extends MoviesDatasource {
 
   @override
   Future<List<Movie>> getNowPlaying({int page = 1}) async {
-    final response = await _dio.get('/movies/now_playing');
+    final response = await _dio.get('/movie/now_playing');
 
-    return [];
+    final tmdbResponse = TmdbNowPlayingResponse.fromJson(response.data);
+
+    final List<Movie> movies = tmdbResponse.results
+        .where((tmdbMovie) => tmdbMovie.posterPath != 'no-poster')
+        .map((tmdbMovie) => MovieMapper.tmdbMovieToEntity(tmdbMovie))
+        .toList();
+
+    return movies;
   }
 }

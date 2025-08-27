@@ -4,12 +4,12 @@ import 'package:cinemapedia/infrastructure/models/tmdb/tmdb_movie.dart';
 class MovieMapper {
   static Movie tmdbMovieToEntity(TmdbMovie tmdbMovie) {
     final String backdropPath = tmdbMovie.backdropPath != ''
-        ? 'https://image.tmdb.org/t/p/w500/${tmdbMovie.backdropPath}'
+        ? 'https://image.tmdb.org/t/p/w500${tmdbMovie.backdropPath}'
         : 'https://bigtex.com/wp-content/uploads/2018/05/placeholder-1920x1080.png';
 
     final String posterPath = tmdbMovie.posterPath != ''
-        ? 'https://image.tmdb.org/t/p/w500/${tmdbMovie.posterPath}'
-        : 'https://www.juliedray.com/wp-content/uploads/2022/01/sans-affiche.png';
+        ? 'https://image.tmdb.org/t/p/w500${tmdbMovie.posterPath}'
+        : 'no-poster';
 
     return Movie(
       adult: tmdbMovie.adult,
