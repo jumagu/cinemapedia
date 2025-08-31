@@ -1,13 +1,13 @@
 import 'package:cinemapedia/infrastructure/models/tmdb/tmdb_movie.dart';
 
-class TmdbNowPlayingResponse {
+class TmdbMoviesResponse {
   final TmdbNowPlayingResponseDates? dates;
   final int page;
   final List<TmdbMovie> results;
   final int totalPages;
   final int totalResults;
 
-  TmdbNowPlayingResponse({
+  TmdbMoviesResponse({
     required this.dates,
     required this.page,
     required this.results,
@@ -15,8 +15,8 @@ class TmdbNowPlayingResponse {
     required this.totalResults,
   });
 
-  factory TmdbNowPlayingResponse.fromJson(Map<String, dynamic> json) =>
-      TmdbNowPlayingResponse(
+  factory TmdbMoviesResponse.fromJson(Map<String, dynamic> json) =>
+      TmdbMoviesResponse(
         dates: json["dates"] != null
             ? TmdbNowPlayingResponseDates.fromJson(json["dates"])
             : null,

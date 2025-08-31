@@ -3,7 +3,7 @@ import 'package:cinemapedia/config/helpers/format_number.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
 
-class MoviesHorizListview extends StatelessWidget {
+class MoviesHorizListview extends StatefulWidget {
   final List<Movie> movies;
   final String? title;
   final String? label;
@@ -18,21 +18,51 @@ class MoviesHorizListview extends StatelessWidget {
   });
 
   @override
+  State<MoviesHorizListview> createState() => _MoviesHorizListviewState();
+}
+
+class _MoviesHorizListviewState extends State<MoviesHorizListview> {
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      if (widget.loadNextMovies == null) return;
+
+      final maxScroll = scrollController.position.maxScrollExtent;
+      final scrollPosition = scrollController.position.pixels + 200;
+
+      if (scrollPosition >= maxScroll) {
+        widget.loadNextMovies!();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 350,
+      height: 360,
       child: Column(
+        spacing: 10,
         children: [
-          if (title != null || label != null)
-            _Header(title: title, label: label),
+          if (widget.title != null || widget.label != null)
+            _Header(title: widget.title, label: widget.label),
           Expanded(
             child: ListView.builder(
+              controller: scrollController,
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
-              itemCount: movies.length,
+              itemCount: widget.movies.length,
               itemBuilder: (context, index) {
-                final movie = movies[index];
-                return _Slide(movie: movie);
+                final movie = widget.movies[index];
+                return FadeInRight(child: _Slide(movie: movie));
               },
             ),
           ),
@@ -81,6 +111,7 @@ class _Slide extends StatelessWidget {
     final textStyles = Theme.of(context).textTheme;
 
     return Container(
+      height: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
         spacing: 5,
@@ -89,16 +120,18 @@ class _Slide extends StatelessWidget {
           // ? Image
           SizedBox(
             width: 150,
+            height: 225,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Image.network(
                 movie.posterPath,
                 width: 150,
+                height: double.infinity,
                 fit: BoxFit.cover,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress != null) {
                     return Container(
-                      padding: EdgeInsetsGeometry.all(8.0),
+                      padding: EdgeInsets.all(0.8),
                       child: Center(child: CircularProgressIndicator()),
                     );
                   }

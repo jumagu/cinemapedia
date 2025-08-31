@@ -13,11 +13,8 @@ class TmdbDatasource extends MoviesDatasource {
     ),
   );
 
-  @override
-  Future<List<Movie>> getNowPlaying({int page = 1}) async {
-    final response = await _dio.get('/movie/now_playing');
-
-    final tmdbResponse = TmdbNowPlayingResponse.fromJson(response.data);
+  List<Movie> _jsonToMovies(Map<String, dynamic> json) {
+    final tmdbResponse = TmdbMoviesResponse.fromJson(json);
 
     final List<Movie> movies = tmdbResponse.results
         .where((tmdbMovie) => tmdbMovie.posterPath != 'no-poster')
@@ -25,5 +22,45 @@ class TmdbDatasource extends MoviesDatasource {
         .toList();
 
     return movies;
+  }
+
+  @override
+  Future<List<Movie>> getNowPlaying({int page = 1}) async {
+    final response = await _dio.get(
+      '/movie/now_playing',
+      queryParameters: {'page': page},
+    );
+
+    return _jsonToMovies(response.data);
+  }
+
+  @override
+  Future<List<Movie>> getPopular({int page = 1}) async {
+    final response = await _dio.get(
+      '/movie/popular',
+      queryParameters: {'page': page},
+    );
+
+    return _jsonToMovies(response.data);
+  }
+
+  @override
+  Future<List<Movie>> getTopRated({int page = 1}) async {
+    final response = await _dio.get(
+      '/movie/top_rated',
+      queryParameters: {'page': page},
+    );
+
+    return _jsonToMovies(response.data);
+  }
+
+  @override
+  Future<List<Movie>> getUpcoming({int page = 1}) async {
+    final response = await _dio.get(
+      '/movie/upcoming',
+      queryParameters: {'page': page},
+    );
+
+    return _jsonToMovies(response.data);
   }
 }
