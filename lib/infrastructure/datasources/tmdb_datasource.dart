@@ -2,7 +2,8 @@ import 'package:cinemapedia/config/constants/environment.dart';
 import 'package:cinemapedia/domain/datasources/movies_datasource.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/infrastructure/mappers/movie_mapper.dart';
-import 'package:cinemapedia/infrastructure/models/tmdb/tmdb_now_playing_response.dart';
+import 'package:cinemapedia/infrastructure/models/tmdb/tmdb_movie_detail.dart';
+import 'package:cinemapedia/infrastructure/models/tmdb/tmdb_movies_response.dart';
 import 'package:dio/dio.dart';
 
 class TmdbDatasource extends MoviesDatasource {
@@ -62,5 +63,20 @@ class TmdbDatasource extends MoviesDatasource {
     );
 
     return _jsonToMovies(response.data);
+  }
+
+  @override
+  Future<Movie> getMovieById({required String id}) async {
+    final response = await _dio.get('/movie/$id');
+
+    if (response.statusCode != 200) {
+      throw Exception('Movie with id: $id not found.');
+    }
+
+    final tmdbMovieDetail = TmdbMovieDetail.fromJson(response.data);
+
+    final Movie movie = MovieMapper.tmdbMovieDetailToEntity(tmdbMovieDetail);
+
+    return movie;
   }
 }

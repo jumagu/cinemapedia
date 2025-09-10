@@ -1,5 +1,6 @@
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/infrastructure/models/tmdb/tmdb_movie.dart';
+import 'package:cinemapedia/infrastructure/models/tmdb/tmdb_movie_detail.dart';
 
 class MovieMapper {
   static Movie tmdbMovieToEntity(TmdbMovie tmdbMovie) {
@@ -28,6 +29,33 @@ class MovieMapper {
       video: tmdbMovie.video,
       voteAverage: tmdbMovie.voteAverage,
       voteCount: tmdbMovie.voteCount,
+    );
+  }
+
+  static Movie tmdbMovieDetailToEntity(TmdbMovieDetail tmdbMovieDetail) {
+    final String backdropPath = tmdbMovieDetail.backdropPath != ''
+        ? 'https://image.tmdb.org/t/p/w500${tmdbMovieDetail.backdropPath}'
+        : 'https://bigtex.com/wp-content/uploads/2018/05/placeholder-1920x1080.png';
+
+    final String posterPath = tmdbMovieDetail.posterPath != ''
+        ? 'https://image.tmdb.org/t/p/w500${tmdbMovieDetail.posterPath}'
+        : 'https://www.juliedray.com/wp-content/uploads/2022/01/sans-affiche.png';
+
+    return Movie(
+      adult: tmdbMovieDetail.adult,
+      backdropPath: backdropPath,
+      genreIds: tmdbMovieDetail.genres.map((e) => e.name).toList(),
+      id: tmdbMovieDetail.id,
+      originalLanguage: tmdbMovieDetail.originalLanguage,
+      originalTitle: tmdbMovieDetail.originalTitle,
+      overview: tmdbMovieDetail.overview,
+      popularity: tmdbMovieDetail.popularity,
+      posterPath: posterPath,
+      releaseDate: tmdbMovieDetail.releaseDate,
+      title: tmdbMovieDetail.title,
+      video: tmdbMovieDetail.video,
+      voteAverage: tmdbMovieDetail.voteAverage,
+      voteCount: tmdbMovieDetail.voteCount,
     );
   }
 }
