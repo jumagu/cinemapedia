@@ -79,4 +79,14 @@ class TmdbMoviesDatasource extends MoviesDatasource {
 
     return movie;
   }
+
+  @override
+  Future<List<Movie>> searchMovies({required String query}) async {
+    final response = await _dio.get(
+      '/search/movie',
+      queryParameters: {'query': query},
+    );
+
+    return _jsonToMovies(response.data);
+  }
 }

@@ -31,4 +31,9 @@ class TmdbMoviesRepository extends MoviesRepository {
   Future<Movie> getMovieById({required String id}) {
     return moviesDatasource.getMovieById(id: id);
   }
+
+  @override
+  Future<List<Movie>> searchMovies({required String query}) {
+    return moviesDatasource.searchMovies(query: query);
+  }
 }
