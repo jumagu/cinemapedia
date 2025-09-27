@@ -6,7 +6,7 @@ import 'package:cinemapedia/infrastructure/models/tmdb/tmdb_movie_detail.dart';
 import 'package:cinemapedia/infrastructure/models/tmdb/tmdb_movies_response.dart';
 import 'package:dio/dio.dart';
 
-class TmdbDatasource extends MoviesDatasource {
+class TmdbMoviesDatasource extends MoviesDatasource {
   final Dio _dio = Dio(
     BaseOptions(
       baseUrl: 'https://api.themoviedb.org/3',
