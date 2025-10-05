@@ -24,7 +24,7 @@ class MovieMapper {
       overview: tmdbMovie.overview,
       popularity: tmdbMovie.popularity,
       posterPath: posterPath,
-      releaseDate: tmdbMovie.releaseDate,
+      releaseDate: tmdbMovie.releaseDate ?? DateTime.now(),
       title: tmdbMovie.title,
       video: tmdbMovie.video,
       voteAverage: tmdbMovie.voteAverage,
