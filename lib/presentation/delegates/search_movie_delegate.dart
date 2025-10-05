@@ -51,7 +51,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
           itemBuilder: (context, index) {
             final suggestedMovie = suggestedMovies[index];
 
-            return _MovieSearchItem(movie: suggestedMovie);
+            return _MovieSearchItem(movie: suggestedMovie, onMovieTap: close);
           },
         );
       },
@@ -61,67 +61,75 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
 class _MovieSearchItem extends StatelessWidget {
   final Movie movie;
+  final Function onMovieTap;
 
-  const _MovieSearchItem({required this.movie});
+  const _MovieSearchItem({required this.movie, required this.onMovieTap});
 
   @override
   Widget build(BuildContext context) {
     final textStyles = Theme.of(context).textTheme;
     final size = MediaQuery.of(context).size;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: size.width * 0.05, vertical: 5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: size.width * 0.025,
-        children: [
-          // ? Movie Image
-          SizedBox(
-            width: size.width * 0.25,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Image.network(movie.posterPath),
+    return GestureDetector(
+      onTap: () => onMovieTap(context, movie),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: size.width * 0.05,
+          vertical: 5,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: size.width * 0.025,
+          children: [
+            // ? Movie Image
+            SizedBox(
+              width: size.width * 0.25,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.network(movie.posterPath),
+              ),
             ),
-          ),
 
-          // ? Movie Description
-          SizedBox(
-            width: size.width * 0.6,
-            child: Column(
-              spacing: 1.5,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  movie.title,
-                  maxLines: 2,
-                  style: textStyles.titleMedium?.copyWith(
-                    overflow: TextOverflow.ellipsis,
+            // ? Movie Description
+            SizedBox(
+              width: size.width * 0.6,
+              child: Column(
+                spacing: 1.5,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    movie.title,
+                    maxLines: 2,
+                    style: textStyles.titleMedium?.copyWith(
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-                Text(
-                  movie.overview,
-                  maxLines: 2,
-                  style: TextStyle(overflow: TextOverflow.ellipsis),
-                ),
-                Row(
-                  spacing: 2,
-                  children: [
-                    Icon(
-                      Icons.star_half_rounded,
-                      color: Colors.yellow.shade800,
-                    ),
+                  if (movie.overview.isNotEmpty)
                     Text(
-                      FormatNumber.short(movie.voteAverage, 1),
-                      style: textStyles.bodyMedium?.copyWith(
-                        color: Colors.yellow.shade900,
-                      ),
+                      movie.overview,
+                      maxLines: 2,
+                      style: TextStyle(overflow: TextOverflow.ellipsis),
                     ),
-                  ],
-                ),
-              ],
+                  Row(
+                    spacing: 2,
+                    children: [
+                      Icon(
+                        Icons.star_half_rounded,
+                        color: Colors.yellow.shade800,
+                      ),
+                      Text(
+                        FormatNumber.short(movie.voteAverage, 1),
+                        style: textStyles.bodyMedium?.copyWith(
+                          color: Colors.yellow.shade900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
