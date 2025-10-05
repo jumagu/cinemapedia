@@ -18,8 +18,8 @@ class TmdbMoviesDatasource extends MoviesDatasource {
     final tmdbResponse = TmdbMoviesResponse.fromJson(json);
 
     final List<Movie> movies = tmdbResponse.results
-        .where((tmdbMovie) => tmdbMovie.posterPath != 'no-poster')
         .map((tmdbMovie) => MovieMapper.tmdbMovieToEntity(tmdbMovie))
+        .where((tmdbMovie) => tmdbMovie.posterPath != 'no-poster')
         .toList();
 
     return movies;
