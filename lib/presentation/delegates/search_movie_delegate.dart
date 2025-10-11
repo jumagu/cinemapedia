@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/config/helpers/format_number.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
@@ -8,8 +10,29 @@ typedef SearchMoviesCallback =
 
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearchMoviesCallback searchMoviesFn;
+  final StreamController<List<Movie>> debouncedMovies =
+      StreamController.broadcast();
+  Timer? _debounceTimer;
 
   SearchMovieDelegate({required this.searchMoviesFn});
+
+  void _onQueryChanged(String query) {
+    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      if (query.isEmpty) {
+        debouncedMovies.add([]);
+        return;
+      }
+
+      final movies = await searchMoviesFn(query: query);
+      debouncedMovies.add(movies);
+    });
+  }
+
+  void _clearStreams() {
+    debouncedMovies.close();
+  }
 
   @override
   String? get searchFieldLabel => 'Search movie...';
@@ -29,7 +52,10 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
-      onPressed: () => close(context, null),
+      onPressed: () {
+        _clearStreams();
+        close(context, null);
+      },
       icon: Icon(Icons.arrow_back_rounded),
     );
   }
@@ -41,8 +67,10 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return FutureBuilder(
-      future: searchMoviesFn(query: query),
+    _onQueryChanged(query.trim());
+
+    return StreamBuilder(
+      stream: debouncedMovies.stream,
       builder: (context, snapshot) {
         final suggestedMovies = snapshot.data ?? [];
 
@@ -51,7 +79,13 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
           itemBuilder: (context, index) {
             final suggestedMovie = suggestedMovies[index];
 
-            return _MovieSearchItem(movie: suggestedMovie, onMovieTap: close);
+            return _MovieSearchItem(
+              movie: suggestedMovie,
+              onMovieTap: (context, movie) {
+                _clearStreams();
+                close(context, movie);
+              },
+            );
           },
         );
       },
@@ -61,7 +95,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
 class _MovieSearchItem extends StatelessWidget {
   final Movie movie;
-  final Function onMovieTap;
+  final void Function(BuildContext context, Movie movie) onMovieTap;
 
   const _MovieSearchItem({required this.movie, required this.onMovieTap});
 
