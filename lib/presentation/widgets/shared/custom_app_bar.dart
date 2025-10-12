@@ -14,7 +14,10 @@ class CustomAppBar extends ConsumerWidget {
     final titleStyle = Theme.of(context).textTheme.titleMedium;
 
     final searchQuery = ref.watch(searchQueryProvider);
-    final searchMovies = ref.read(moviesRepositoryProvider).searchMovies;
+    final searchedMovies = ref.watch(searchedMoviesProvider);
+    final searchMoviesFn = ref
+        .read(searchedMoviesProvider.notifier)
+        .searchMoviesByQuery;
 
     return SafeArea(
       bottom: false,
@@ -34,12 +37,8 @@ class CustomAppBar extends ConsumerWidget {
                     query: searchQuery,
                     context: context,
                     delegate: SearchMovieDelegate(
-                      searchMoviesFn: ({required String query}) {
-                        ref
-                            .read(searchQueryProvider.notifier)
-                            .update((state) => query);
-                        return searchMovies(query: query);
-                      },
+                      searchMoviesFn: searchMoviesFn,
+                      initialMovies: searchedMovies,
                     ),
                   );
 
