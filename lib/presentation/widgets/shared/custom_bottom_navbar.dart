@@ -6,35 +6,6 @@ class CustomBottomNavbar extends StatelessWidget {
 
   const CustomBottomNavbar({super.key, required this.navigationShell});
 
-  // int _getCurrentIndex(BuildContext context) {
-  //   final String location = GoRouterState.of(context).matchedLocation;
-
-  //   switch (location) {
-  //     case '/':
-  //       return 0;
-  //     case '/categories':
-  //       return 1;
-  //     case '/favorites':
-  //       return 2;
-  //     default:
-  //       return 0;
-  //   }
-  // }
-
-  // void _onTap(BuildContext context, int value) {
-  //   switch (value) {
-  //     case 0:
-  //       context.go('/');
-  //       break;
-  //     case 1:
-  //       context.go('/categories');
-  //       break;
-  //     case 2:
-  //       context.go('/favorites');
-  //       break;
-  //   }
-  // }
-
   void _onTap(BuildContext context, int index) {
     navigationShell.goBranch(
       index,
