@@ -41,6 +41,10 @@ class MovieMapper {
         ? 'https://image.tmdb.org/t/p/w500${tmdbMovieDetail.posterPath}'
         : 'https://www.juliedray.com/wp-content/uploads/2022/01/sans-affiche.png';
 
+    final releaseDate = tmdbMovieDetail.releaseDate != ''
+        ? DateTime.parse(tmdbMovieDetail.releaseDate)
+        : DateTime(2025);
+
     return Movie(
       adult: tmdbMovieDetail.adult,
       backdropPath: backdropPath,
@@ -51,7 +55,7 @@ class MovieMapper {
       overview: tmdbMovieDetail.overview,
       popularity: tmdbMovieDetail.popularity,
       posterPath: posterPath,
-      releaseDate: tmdbMovieDetail.releaseDate,
+      releaseDate: releaseDate,
       title: tmdbMovieDetail.title,
       video: tmdbMovieDetail.video,
       voteAverage: tmdbMovieDetail.voteAverage,
