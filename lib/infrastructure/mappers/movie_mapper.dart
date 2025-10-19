@@ -43,7 +43,7 @@ class MovieMapper {
 
     final releaseDate = tmdbMovieDetail.releaseDate != ''
         ? DateTime.parse(tmdbMovieDetail.releaseDate)
-        : DateTime(2025);
+        : DateTime.now();
 
     return Movie(
       adult: tmdbMovieDetail.adult,
