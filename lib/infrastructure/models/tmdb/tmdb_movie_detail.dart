@@ -73,7 +73,7 @@ class TmdbMovieDetail {
     originalTitle: json["original_title"],
     overview: json["overview"],
     popularity: json["popularity"]?.toDouble(),
-    posterPath: json["poster_path"],
+    posterPath: json["poster_path"] ?? '',
     productionCompanies: List<ProductionCompany>.from(
       json["production_companies"].map((x) => ProductionCompany.fromJson(x)),
     ),
@@ -147,8 +147,8 @@ class BelongsToCollection {
       BelongsToCollection(
         id: json["id"],
         name: json["name"],
-        posterPath: json["poster_path"],
-        backdropPath: json["backdrop_path"],
+        posterPath: json["poster_path"] ?? '',
+        backdropPath: json["backdrop_path"] ?? '',
       );
 
   Map<String, dynamic> toJson() => {

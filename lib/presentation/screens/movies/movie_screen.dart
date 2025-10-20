@@ -1,6 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/domain/entities/actor.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/presentation/providers/movies/favorite_movies_provider.dart';
+import 'package:cinemapedia/presentation/providers/movies/is_favorite_movie_provider.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,14 +50,22 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
   }
 }
 
-class _CustomAppBarSliver extends StatelessWidget {
+class _CustomAppBarSliver extends ConsumerWidget {
   final Movie movie;
 
   const _CustomAppBarSliver({required this.movie});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size; // ? Device dimensions
+    final isFavoriteMovieFuture = ref.watch(isFavoriteMovieProvider(movie.id));
+
+    Future<void> onPressed() async {
+      await ref
+          .read(favoriteMoviesProvider.notifier)
+          .toggleFavoriteMovie(movie);
+      ref.invalidate(isFavoriteMovieProvider(movie.id));
+    }
 
     return SliverAppBar(
       backgroundColor: Colors.black,
@@ -63,9 +73,22 @@ class _CustomAppBarSliver extends StatelessWidget {
       expandedHeight: size.height * 0.7,
       actions: [
         IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.favorite),
-          // icon: const Icon(Icons.favorite_outline),
+          onPressed: onPressed,
+          icon: isFavoriteMovieFuture.when(
+            data: (isFavorite) => isFavorite
+                ? const Icon(Icons.favorite)
+                : const Icon(Icons.favorite_outline),
+            error: (_, __) => throw UnimplementedError(),
+            loading: () => const SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 2,
+                semanticsLabel: 'Loading...',
+              ),
+            ),
+          ),
         ),
       ],
       flexibleSpace: FlexibleSpaceBar(
