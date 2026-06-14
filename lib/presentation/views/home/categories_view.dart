@@ -6,8 +6,8 @@ class CategoriesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Categories view')),
-      body: const Center(child: Text('Categories')),
+      appBar: AppBar(title: const Text('Categories')),
+      body: const Center(child: Text('Coming soon...')),
     );
   }
 }
