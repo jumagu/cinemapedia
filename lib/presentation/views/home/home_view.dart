@@ -1,3 +1,4 @@
+import 'package:cinemapedia/config/helpers/format_date.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,7 @@ class HomeViewState extends ConsumerState<HomeView> {
                 MoviesHorizListview(
                   movies: nowPlayingMovies,
                   title: 'Now Playing',
-                  label: 'Monday 20',
+                  label: FormatDate.getCurrentDay(),
                   loadNextMovies: () => {
                     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
                   },
