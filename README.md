@@ -4,6 +4,8 @@ A Flutter application for browsing and discovering movies, powered by [The Movie
 
 ## Demo
 
+- [Link to YouTube video](https://youtu.be/64eSKLRDGyo)
+
 ## Features
 
 - **Movie Browsing**: Featured slideshow plus horizontal lists for _now playing_, _popular_, _upcoming_, and _top rated_ movies, with infinite scroll
